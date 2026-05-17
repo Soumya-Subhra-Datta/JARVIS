@@ -10,6 +10,8 @@ import Modal from '../components/UI/Modal';
 import { FiMessageSquare, FiCheckSquare, FiFileText, FiFolder, FiCpu, FiArrowRight, FiMic } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
+const stripEmojis = (text) => text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{23CF}\u{23E9}-\u{23F3}\u{23F8}-\u{23FA}]/gu, '');
+
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();

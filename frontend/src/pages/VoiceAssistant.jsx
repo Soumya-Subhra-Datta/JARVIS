@@ -4,7 +4,9 @@ import AnimatedOrb from '../components/UI/AnimatedOrb';
 import MicButton from '../components/Voice/MicButton';
 import { chatApi } from '../api/api';
 import toast from 'react-hot-toast';
-import { FiVolume2, FiVolumeX, FiZap } from 'react-icons/fi';
+import { FiVolume2, FiVolumeX } from 'react-icons/fi';
+
+const stripEmojis = (text) => text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{23CF}\u{23E9}-\u{23F3}\u{23F8}-\u{23FA}]/gu, '');
 
 export default function VoiceAssistant() {
   const [transcript, setTranscript] = useState('');
@@ -13,7 +15,6 @@ export default function VoiceAssistant() {
   const [muted, setMuted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [interimText, setInterimText] = useState('');
-  const [autoMode, setAutoMode] = useState(false);
   const synthRef = useRef(window.speechSynthesis);
 
   useEffect(() => {
@@ -23,7 +24,9 @@ export default function VoiceAssistant() {
   const speakResponse = (text) => {
     if (muted) return;
     synthRef.current?.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
+    const clean = stripEmojis(text);
+    if (!clean.trim()) return;
+    const utterance = new SpeechSynthesisUtterance(clean);
     utterance.rate = 1;
     utterance.pitch = 1;
     utterance.volume = 1;
@@ -70,10 +73,6 @@ export default function VoiceAssistant() {
     if (!muted) synthRef.current?.cancel();
   };
 
-  const toggleAutoMode = () => {
-    setAutoMode(!autoMode);
-  };
-
   return (
     <div>
       <div className="topbar">
@@ -81,10 +80,6 @@ export default function VoiceAssistant() {
           <span className="page-title">Voice Assistant</span>
         </div>
         <div className="topbar-right">
-          <button className={`btn btn-sm ${autoMode ? 'btn-primary' : 'btn-secondary'}`} onClick={toggleAutoMode} title="Toggle auto-send mode">
-            <FiZap />
-            <span>{autoMode ? 'Auto' : 'Manual'}</span>
-          </button>
           <button className="btn btn-sm btn-secondary" onClick={toggleMute}>
             {muted ? <FiVolumeX /> : <FiVolume2 />}
             <span>{muted ? 'Unmute' : 'Mute'}</span>
@@ -97,10 +92,10 @@ export default function VoiceAssistant() {
 
         <div className="text-center">
           <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, marginBottom: 4 }}>
-            {loading ? 'JARVIS is thinking...' : autoMode ? 'Speak — auto-sends on pause' : 'Speak to JARVIS'}
+            {loading ? 'JARVIS is thinking...' : 'Tap mic and speak — auto-sends on pause'}
           </h3>
           <p className="text-muted text-sm">
-            {autoMode ? 'Tap mic → speak → auto-sends when you pause' : (muted ? 'Voice output is muted' : 'Tap mic, speak, then tap Send')}
+            {muted ? 'Voice output is muted' : 'AI voice response is active'}
           </p>
         </div>
 
@@ -111,10 +106,7 @@ export default function VoiceAssistant() {
               <div style={{ fontSize: 15, fontWeight: 500 }}>{transcript}</div>
             </div>
           )}
-          {interimText && !transcript && !autoMode && (
-            <div style={{ color: 'var(--text-muted)' }}>{interimText}</div>
-          )}
-          {autoMode && interimText && (
+          {interimText && !transcript && (
             <div style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Listening: "{interimText}"</div>
           )}
           {response && (
@@ -131,16 +123,7 @@ export default function VoiceAssistant() {
         </div>
 
         <div className="flex items-center gap-16">
-          <MicButton onTranscript={handleTranscript} onSend={autoMode ? handleVoiceSend : undefined} disabled={loading} autoSend={autoMode} />
-          {!autoMode && (
-            <button
-              className="btn btn-primary"
-              onClick={() => handleVoiceSend()}
-              disabled={loading || !interimText.trim()}
-            >
-              Send Voice
-            </button>
-          )}
+          <MicButton onTranscript={handleTranscript} onSend={handleVoiceSend} disabled={loading} autoSend />
         </div>
       </div>
     </div>
