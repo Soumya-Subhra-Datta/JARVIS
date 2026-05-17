@@ -78,6 +78,7 @@ const commandParser = (message) => {
         /^navigate\s+to\s+(.+)/i,
         /^play\s+(.+)\s+(?:on|in)\s+(.+)/i,
         /^play\s+(.+)/i,
+        /^google\s+(.+)/i,
         /^search\s+(.+)\s+(?:on|in)\s+(.+)/i
       ],
       extract: (msg) => {
@@ -156,6 +157,12 @@ const commandParser = (message) => {
           return { site: 'google', url: `https://google.com/search?q=${encodeURIComponent(query)}`, search: true, query };
         }
 
+        const googleMatch = msg.match(/^google\s+(.+)/i);
+        if (googleMatch) {
+          const query = googleMatch[1].trim();
+          return { site: 'google', url: `https://google.com/search?q=${encodeURIComponent(query)}`, search: true, query };
+        }
+
         const site = msg.replace(/^(?:open|go to|launch|navigate to)\s+/i, '').trim().toLowerCase();
 
         for (const [key, url] of Object.entries(siteMap)) {
@@ -185,7 +192,7 @@ const commandParser = (message) => {
         /^why\s+(?:is|does|do|can)/i
       ],
       extract: (msg) => {
-        const cleaned = msg.replace(/^(?:google|look up|find|lookup|browse)\s+(?:for\s+)?/i, '').trim();
+        const cleaned = msg.replace(/^(?:search|google|look up|find|lookup|browse)\s+(?:for\s+)?/i, '').trim();
         return { query: cleaned || msg };
       }
     },
