@@ -99,6 +99,7 @@ export default function ChatPage() {
     setMessages(prev => [...prev, { id: Date.now(), role: 'user', displayContent: userMsg, content: userMsg, created_at: new Date().toISOString() }]);
 
     setLoading(true);
+    const popup = window.open('', '_blank');
     try {
       const res = await chatApi.sendMessage({ message: userMsg, sessionId: currentSession?.id });
       const newSessionId = res.data.sessionId;
@@ -107,7 +108,11 @@ export default function ChatPage() {
       }
       loadSessions();
       if (res.data.action?.type === 'open_website' && res.data.action.url) {
-        window.open(res.data.action.url, '_blank');
+        if (popup && !popup.closed) {
+          popup.location.href = res.data.action.url;
+        } else {
+          window.open(res.data.action.url, '_blank');
+        }
       }
       setMessages(prev => [...prev, {
         id: Date.now() + 1,

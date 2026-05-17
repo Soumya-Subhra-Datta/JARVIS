@@ -164,7 +164,7 @@ export default function Dashboard() {
                 const res = await chatApi.sendMessage({ message: text });
                 setVoiceResponse(res.data.message);
                 if (res.data.action?.type === 'open_website' && res.data.action.url) {
-                  window.open(res.data.action.url, '_blank');
+                  window.location.href = res.data.action.url;
                 }
               } catch { toast.error('Voice command failed'); } finally { setVoiceLoading(false); }
             }}

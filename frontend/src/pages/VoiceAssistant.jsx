@@ -58,7 +58,7 @@ export default function VoiceAssistant() {
       setAiState(res.data.emotion || 'neutral');
       speakResponse(aiMessage);
       if (res.data.action?.type === 'open_website' && res.data.action.url) {
-        window.open(res.data.action.url, '_blank');
+        window.location.href = res.data.action.url;
       }
     } catch (err) {
       toast.error('Failed to process voice command');
