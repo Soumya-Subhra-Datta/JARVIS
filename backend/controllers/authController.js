@@ -26,8 +26,7 @@ const register = async (req, res, next) => {
 
     const token = jwt.sign(
       { userId },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      process.env.JWT_SECRET
     );
 
     await query(
@@ -61,8 +60,7 @@ const login = async (req, res, next) => {
 
     const token = jwt.sign(
       { userId: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      process.env.JWT_SECRET
     );
 
     await query(
