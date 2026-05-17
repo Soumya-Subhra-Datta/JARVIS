@@ -718,6 +718,29 @@ tr:hover td { background: var(--bg-hover); }
   text-align: center;
 }
 
+.floating-mic {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.floating-mic:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(0, 212, 255, 0.6);
+}
+
 /* Landing Page */
 .landing {
   min-height: 100vh;

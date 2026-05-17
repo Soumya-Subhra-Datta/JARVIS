@@ -3,7 +3,7 @@ import AnimatedOrb from '../components/UI/AnimatedOrb';
 import MicButton from '../components/Voice/MicButton';
 import { chatApi } from '../api/api';
 import toast from 'react-hot-toast';
-import { FiVolume2, FiVolumeX } from 'react-icons/fi';
+import { FiVolume2, FiVolumeX, FiZap } from 'react-icons/fi';
 
 export default function VoiceAssistant() {
   const [transcript, setTranscript] = useState('');
@@ -12,6 +12,7 @@ export default function VoiceAssistant() {
   const [muted, setMuted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [interimText, setInterimText] = useState('');
+  const [autoMode, setAutoMode] = useState(false);
   const synthRef = useRef(window.speechSynthesis);
 
   useEffect(() => {
@@ -35,12 +36,12 @@ export default function VoiceAssistant() {
     setInterimText(text);
   };
 
-  const handleVoiceSend = async () => {
-    if (!interimText.trim()) {
+  const handleVoiceSend = async (text) => {
+    const userText = text || interimText.trim();
+    if (!userText) {
       toast.error('No voice input detected');
       return;
     }
-    const userText = interimText;
     setTranscript(userText);
     setInterimText('');
     setAiState('thinking');
@@ -68,6 +69,10 @@ export default function VoiceAssistant() {
     if (!muted) synthRef.current?.cancel();
   };
 
+  const toggleAutoMode = () => {
+    setAutoMode(!autoMode);
+  };
+
   return (
     <div>
       <div className="topbar">
@@ -75,6 +80,10 @@ export default function VoiceAssistant() {
           <span className="page-title">Voice Assistant</span>
         </div>
         <div className="topbar-right">
+          <button className={`btn btn-sm ${autoMode ? 'btn-primary' : 'btn-secondary'}`} onClick={toggleAutoMode} title="Toggle auto-send mode">
+            <FiZap />
+            <span>{autoMode ? 'Auto' : 'Manual'}</span>
+          </button>
           <button className="btn btn-sm btn-secondary" onClick={toggleMute}>
             {muted ? <FiVolumeX /> : <FiVolume2 />}
             <span>{muted ? 'Unmute' : 'Mute'}</span>
@@ -87,10 +96,10 @@ export default function VoiceAssistant() {
 
         <div className="text-center">
           <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, marginBottom: 4 }}>
-            {loading ? 'JARVIS is listening...' : 'Speak to JARVIS'}
+            {loading ? 'JARVIS is thinking...' : autoMode ? 'Speak — auto-sends on pause' : 'Speak to JARVIS'}
           </h3>
           <p className="text-muted text-sm">
-            {muted ? 'Voice output is muted' : 'AI voice response is active'}
+            {autoMode ? 'Tap mic → speak → auto-sends when you pause' : (muted ? 'Voice output is muted' : 'Tap mic, speak, then tap Send')}
           </p>
         </div>
 
@@ -101,8 +110,11 @@ export default function VoiceAssistant() {
               <div style={{ fontSize: 15, fontWeight: 500 }}>{transcript}</div>
             </div>
           )}
-          {interimText && !transcript && (
+          {interimText && !transcript && !autoMode && (
             <div style={{ color: 'var(--text-muted)' }}>{interimText}</div>
+          )}
+          {autoMode && interimText && (
+            <div style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Listening: "{interimText}"</div>
           )}
           {response && (
             <div>
@@ -116,14 +128,16 @@ export default function VoiceAssistant() {
         </div>
 
         <div className="flex items-center gap-16">
-          <MicButton onTranscript={handleTranscript} disabled={loading} />
-          <button
-            className="btn btn-primary"
-            onClick={handleVoiceSend}
-            disabled={loading || !interimText.trim()}
-          >
-            Send Voice
-          </button>
+          <MicButton onTranscript={handleTranscript} onSend={autoMode ? handleVoiceSend : undefined} disabled={loading} autoSend={autoMode} />
+          {!autoMode && (
+            <button
+              className="btn btn-primary"
+              onClick={() => handleVoiceSend()}
+              disabled={loading || !interimText.trim()}
+            >
+              Send Voice
+            </button>
+          )}
         </div>
       </div>
     </div>

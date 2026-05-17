@@ -4,7 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import { chatApi, tasksApi, notesApi, filesApi, memoryApi } from '../api/api';
 import StatsCard from '../components/Dashboard/StatsCard';
 import AnimatedOrb from '../components/UI/AnimatedOrb';
-import { FiMessageSquare, FiCheckSquare, FiFileText, FiFolder, FiCpu, FiArrowRight } from 'react-icons/fi';
+import MicButton from '../components/Voice/MicButton';
+import Modal from '../components/UI/Modal';
+import { FiMessageSquare, FiCheckSquare, FiFileText, FiFolder, FiCpu, FiArrowRight, FiMic } from 'react-icons/fi';
+import toast from 'react-hot-toast';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -13,6 +16,10 @@ export default function Dashboard() {
   const [recentChats, setRecentChats] = useState([]);
   const [recentTasks, setRecentTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [voiceResponse, setVoiceResponse] = useState('');
+  const [voiceTranscript, setVoiceTranscript] = useState('');
+  const [voiceLoading, setVoiceLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -132,6 +139,37 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      <button className="floating-mic" onClick={() => setVoiceOpen(true)} title="Quick voice command">
+        <FiMic size={22} />
+      </button>
+
+      <Modal isOpen={voiceOpen} onClose={() => { setVoiceOpen(false); setVoiceResponse(''); setVoiceTranscript(''); }} title="Quick Voice Command">
+        <div style={{ padding: '24px', textAlign: 'center' }}>
+          <AnimatedOrb emotion={voiceLoading ? 'thinking' : 'idle'} size="small" />
+          <div style={{ margin: '16px 0', minHeight: 48 }}>
+            {voiceTranscript && <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 8 }}>"{voiceTranscript}"</div>}
+            {voiceResponse && <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>{voiceResponse}</div>}
+            {!voiceTranscript && !voiceResponse && <div className="text-muted text-sm">Tap mic and speak — auto-sends on pause</div>}
+          </div>
+          <MicButton
+            onTranscript={setVoiceTranscript}
+            onSend={async (text) => {
+              setVoiceTranscript(text);
+              setVoiceLoading(true);
+              try {
+                const res = await chatApi.sendMessage({ message: text });
+                setVoiceResponse(res.data.message);
+                if (res.data.action?.type === 'open_website' && res.data.action.url) {
+                  window.open(res.data.action.url, '_blank');
+                }
+              } catch { toast.error('Voice command failed'); } finally { setVoiceLoading(false); }
+            }}
+            disabled={voiceLoading}
+            autoSend
+          />
+        </div>
+      </Modal>
     </div>
   );
 }
