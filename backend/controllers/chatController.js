@@ -2,6 +2,7 @@ const { query } = require('../config/db');
 const { getAIResponse } = require('../services/cerebrasAI');
 const { commandParser } = require('../services/commandParser');
 const { searchWeb } = require('../services/searchService');
+const { openApplication, openFile, openFolder, executeSystemCommand, LOCAL_ENABLED } = require('../services/localAutomation');
 
 const sendMessage = async (req, res, next) => {
   try {
@@ -66,6 +67,29 @@ const sendMessage = async (req, res, next) => {
           message: searchResults.message || 'Web search is currently unavailable.',
           emotion: 'neutral'
         };
+      }
+    } else if (parsed.intent === 'local_command') {
+      const cmd = parsed.data;
+      let result;
+      if (cmd.type === 'file') {
+        result = await openFile(cmd.path);
+      } else if (cmd.type === 'folder') {
+        result = await openFolder(cmd.path);
+      } else if (cmd.type === 'command') {
+        result = await executeSystemCommand(cmd.command);
+      } else {
+        result = await openApplication(cmd.app);
+      }
+      aiResponse = {
+        message: !LOCAL_ENABLED
+          ? 'Local automation is disabled. Set ENABLE_LOCAL_AUTOMATION=true in your .env file. Note: this only works when running the backend on your local machine, not on Render.'
+          : result.success
+            ? result.message
+            : result.message,
+        emotion: result.success ? 'happy' : 'neutral'
+      };
+      if (LOCAL_ENABLED && result.success) {
+        intentAction = { type: 'local_command', data: cmd };
       }
     } else if (parsed.intent === 'open_website') {
       const siteData = parsed.data;

@@ -150,6 +150,29 @@ const commandParser = (message) => {
       extract: (msg) => ({ query: msg })
     },
     {
+      intent: 'local_command',
+      patterns: [
+        /^open\s+(vs\s?code|visual\s+studio|vscode|terminal|cmd|console|notepad|calculator|calc|explorer|file\s+manager|spotify|slack|chrome|browser|firefox)\b/i,
+        /^(?:launch|start|run)\s+(vs\s?code|visual\s+studio|vscode|terminal|cmd|console|notepad|calculator|calc|explorer|file\s+manager|spotify|slack|chrome|browser|firefox)\b/i,
+        /^open\s+(?:file|folder)\s+(.+)/i,
+        /^run\s+command\s+(.+)/i,
+        /^execute\s+(.+)/i
+      ],
+      extract: (msg) => {
+        const lower = msg.toLowerCase();
+        const appMatch = lower.match(/(?:open|launch|start|run)\s+(.+?)(?:\s+for\s+me)?$/i);
+        let target = (appMatch ? appMatch[1] : msg).trim();
+
+        const fileMatch = lower.match(/(?:open)\s+(?:file|folder)\s+(.+)/i);
+        if (fileMatch) return { type: 'file', path: fileMatch[1].trim() };
+
+        const cmdMatch = lower.match(/(?:run\s+command|execute)\s+(.+)/i);
+        if (cmdMatch) return { type: 'command', command: cmdMatch[1].trim() };
+
+        return { type: 'app', app: target };
+      }
+    },
+    {
       intent: 'general_chat',
       patterns: [/.*/],
       extract: (msg) => ({})
