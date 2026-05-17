@@ -4,9 +4,11 @@ import { FiMic, FiMicOff, FiStopCircle } from 'react-icons/fi';
 export default function MicButton({ onTranscript, onSend, disabled, autoSend }) {
   const [isListening, setIsListening] = useState(false);
   const transcriptRef = useRef('');
+  const finalRef = useRef('');
   const isListeningRef = useRef(false);
   const recognitionRef = useRef(null);
   const restartTimeoutRef = useRef(null);
+  const sendLockRef = useRef(false);
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current) {
@@ -20,7 +22,16 @@ export default function MicButton({ onTranscript, onSend, disabled, autoSend }) 
     isListeningRef.current = false;
     setIsListening(false);
     transcriptRef.current = '';
+    finalRef.current = '';
+    sendLockRef.current = false;
   }, []);
+
+  const doSend = useCallback((text) => {
+    if (!text || !onSend || sendLockRef.current) return;
+    sendLockRef.current = true;
+    onSend(text);
+    setTimeout(() => { sendLockRef.current = false; }, 1500);
+  }, [onSend]);
 
   const startListening = useCallback(() => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -35,12 +46,17 @@ export default function MicButton({ onTranscript, onSend, disabled, autoSend }) 
     recognition.lang = 'en-US';
 
     recognition.onresult = (event) => {
-      let transcript = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        transcript += event.results[i][0].transcript;
+      let fullText = '';
+      let finalText = '';
+      for (let i = 0; i < event.results.length; i++) {
+        fullText += event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalText += event.results[i][0].transcript;
+        }
       }
-      transcriptRef.current = transcript;
-      if (onTranscript) onTranscript(transcript);
+      transcriptRef.current = fullText;
+      if (finalText) finalRef.current = finalText;
+      if (onTranscript) onTranscript(fullText);
     };
 
     recognition.onerror = () => {
@@ -54,21 +70,24 @@ export default function MicButton({ onTranscript, onSend, disabled, autoSend }) 
         setIsListening(false);
         return;
       }
-      const text = transcriptRef.current.trim();
-      transcriptRef.current = '';
-      if (text && onSend) onSend(text);
-      if (isListeningRef.current) {
-        restartTimeoutRef.current = setTimeout(() => {
-          if (isListeningRef.current) startListening();
-        }, 300);
-      }
+      setTimeout(() => {
+        const text = (finalRef.current || transcriptRef.current).trim();
+        transcriptRef.current = '';
+        finalRef.current = '';
+        doSend(text);
+        if (isListeningRef.current) {
+          restartTimeoutRef.current = setTimeout(() => {
+            if (isListeningRef.current) startListening();
+          }, 300);
+        }
+      }, 0);
     };
 
     recognitionRef.current = recognition;
     isListeningRef.current = true;
     recognition.start();
     setIsListening(true);
-  }, [autoSend, onTranscript, onSend]);
+  }, [autoSend, onTranscript, doSend]);
 
   const toggle = () => {
     if (isListening) {
