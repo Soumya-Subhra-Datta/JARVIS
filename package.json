@@ -1,0 +1,22 @@
+{
+  "name": "jarvis-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JARVIS - Personal AI Assistant",
+  "scripts": {
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "setup-db": "cd backend && npm run setup-db",
+    "build": "cd frontend && npm run build",
+    "android:add": "cd frontend && npx cap add android",
+    "android:sync": "cd frontend && npx cap sync",
+    "android:open": "cd frontend && npx cap open android",
+    "ios:add": "cd frontend && npx cap add ios",
+    "ios:sync": "cd frontend && npx cap sync",
+    "ios:open": "cd frontend && npx cap open ios"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

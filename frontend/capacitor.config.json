@@ -1,0 +1,23 @@
+{
+  "appId": "com.jarvis.ai",
+  "appName": "JARVIS",
+  "webDir": "dist",
+  "server": {
+    "url": "https://your-backend.onrender.com/api",
+    "allowNavigation": ["*.onrender.com", "*.vercel.app"]
+  },
+  "android": {
+    "allowMixedContent": true
+  },
+  "ios": {
+    "contentInset": "always",
+    "preferredContentMode": "mobile"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0a0a1a",
+      "androidSplashResourceName": "splash"
+    }
+  }
+}

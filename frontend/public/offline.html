@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JARVIS - Offline</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #0a0a1a;
+      color: #e0e0ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+    .container { max-width: 400px; }
+    .orb {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00d4ff, #8866ff);
+      margin: 0 auto 24px;
+      animation: pulse 2s ease-in-out infinite;
+      box-shadow: 0 0 40px rgba(0,212,255,0.2);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+    h1 { font-size: 24px; margin-bottom: 12px; }
+    p { color: #8888aa; line-height: 1.6; font-size: 14px; }
+    .btn {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #00d4ff, #8866ff);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="orb"></div>
+    <h1>JARVIS</h1>
+    <p>You are currently offline. JARVIS needs an internet connection to access AI features. Please check your connection and try again.</p>
+    <button class="btn" onclick="window.location.reload()">Try Again</button>
+  </div>
+</body>
+</html>
