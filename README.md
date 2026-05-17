@@ -538,6 +538,61 @@ When enabled, it can open local applications (VS Code, folders, etc.) via natura
 - SQL injection is prevented with parameterized queries
 - Helmet.js adds security headers
 
+## Free Resources & Links
+
+### AI API — Cerebras
+| Resource | Link |
+|----------|------|
+| Sign Up (Free Credits) | [https://cloud.cerebras.ai](https://cloud.cerebras.ai) |
+| API Documentation | [https://docs.cerebras.ai](https://docs.cerebras.ai) |
+| Pricing | Free tier available; pay-as-you-go after |
+
+### Free MySQL Database Hosting
+| Platform | Free Tier | Link |
+|----------|-----------|------|
+| **Aiven** | 1GB RAM, 5GB storage, free forever | [https://aiven.io](https://aiven.io) |
+| **Railway** | $5 credit, free MySQL plugin | [https://railway.app](https://railway.app) |
+| **Clever Cloud** | 256MB RAM, 50MB storage free tier | [https://clever-cloud.com](https://clever-cloud.com) |
+| **PlanetScale** | 1GB storage, 100M row reads/mo | [https://planetscale.com](https://planetscale.com) |
+| **TiDB Serverless** | 5GB storage, free forever MySQL-compatible | [https://tidbcloud.com](https://tidbcloud.com) |
+
+### Free Frontend Hosting
+| Platform | Free Tier | Link |
+|----------|-----------|------|
+| **Vercel** | Unlimited sites, automatic SSL, 100GB bandwidth | [https://vercel.com](https://vercel.com) |
+| **Netlify** | Unlimited sites, 300 build minutes/mo | [https://netlify.com](https://netlify.com) |
+| **Render Static** | 100GB bandwidth, free SSL | [https://render.com](https://render.com) |
+| **Cloudflare Pages** | Unlimited sites, 500 builds/mo | [https://pages.cloudflare.com](https://pages.cloudflare.com) |
+
+### Free Backend Hosting
+| Platform | Free Tier | Link |
+|----------|-----------|------|
+| **Render** | 750 hours/mo, 512MB RAM, free SSL | [https://render.com](https://render.com) |
+| **Railway** | $5 credit, good for small projects | [https://railway.app](https://railway.app) |
+| **Fly.io** | 3 shared VMs, 3GB persistent storage | [https://fly.io](https://fly.io) |
+| **Cyclic** | Free tier for Node.js apps | [https://cyclic.sh](https://cyclic.sh) |
+
+### Free Search APIs
+| Platform | Free Tier | Link |
+|----------|-----------|------|
+| **SerpAPI** | 100 searches/mo free | [https://serpapi.com](https://serpapi.com) |
+| **Google Custom Search** | 100 queries/day free | [https://programmablesearchengine.google.com](https://programmablesearchengine.google.com) |
+
+### Free PWA Icon Generator
+| Tool | Link |
+|------|------|
+| PWABuilder Icons | [https://www.pwabuilder.com/imageGenerator](https://www.pwabuilder.com/imageGenerator) |
+| Favicon Generator | [https://realfavicongenerator.net](https://realfavicongenerator.net) |
+| Maskable Icon Editor | [https://maskable.app/editor](https://maskable.app/editor) |
+
+### Free Project Management & Code Hosting
+| Platform | Link |
+|----------|------|
+| **GitHub** (free private repos, Actions, Pages) | [https://github.com](https://github.com) |
+| **GitLab** (free CI/CD, container registry) | [https://gitlab.com](https://gitlab.com) |
+
+> **Note:** Always check current pricing before signing up. Free tiers are subject to change.
+
 ## Future Enhancements
 
 - [ ] Mobile app (React Native)
