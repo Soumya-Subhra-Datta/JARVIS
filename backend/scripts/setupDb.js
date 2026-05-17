@@ -1,4 +1,9 @@
-require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env') });
+const dotenvPath = require('path').join(__dirname, '..', '.env');
+if (!require('fs').existsSync(dotenvPath)) {
+  require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env') });
+} else {
+  require('dotenv').config({ path: dotenvPath });
+}
 const mysql = require('mysql2/promise');
 
 const DB_NAME = process.env.DB_NAME || 'jarvis_ai';
