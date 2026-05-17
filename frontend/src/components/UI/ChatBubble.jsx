@@ -1,3 +1,5 @@
+import ReactMarkdown from 'react-markdown';
+
 export default function ChatBubble({ role, content, timestamp }) {
   let displayContent = content;
   try {
@@ -9,7 +11,9 @@ export default function ChatBubble({ role, content, timestamp }) {
 
   return (
     <div className={`chat-bubble ${role}`}>
-      <div>{displayContent}</div>
+      <div className="markdown-content">
+        <ReactMarkdown>{displayContent}</ReactMarkdown>
+      </div>
       {time && <div className="timestamp">{time}</div>}
     </div>
   );

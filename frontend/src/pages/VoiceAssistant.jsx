@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import AnimatedOrb from '../components/UI/AnimatedOrb';
 import MicButton from '../components/Voice/MicButton';
 import { chatApi } from '../api/api';
@@ -119,7 +120,9 @@ export default function VoiceAssistant() {
           {response && (
             <div>
               <div className="text-xs text-muted mb-8" style={{ marginTop: 12 }}>JARVIS responds:</div>
-              <div style={{ fontSize: 15 }}>{response}</div>
+              <div className="markdown-content" style={{ fontSize: 15, textAlign: 'left' }}>
+                <ReactMarkdown>{response}</ReactMarkdown>
+              </div>
             </div>
           )}
           {!transcript && !interimText && !response && (

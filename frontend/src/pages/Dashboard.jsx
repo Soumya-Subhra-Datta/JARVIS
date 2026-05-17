@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../context/AuthContext';
 import { chatApi, tasksApi, notesApi, filesApi, memoryApi } from '../api/api';
 import StatsCard from '../components/Dashboard/StatsCard';
@@ -149,7 +150,7 @@ export default function Dashboard() {
           <AnimatedOrb emotion={voiceLoading ? 'thinking' : 'idle'} size="small" />
           <div style={{ margin: '16px 0', minHeight: 48 }}>
             {voiceTranscript && <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 8 }}>"{voiceTranscript}"</div>}
-            {voiceResponse && <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>{voiceResponse}</div>}
+            {voiceResponse && <div className="markdown-content" style={{ fontSize: 14, textAlign: 'left' }}><ReactMarkdown>{voiceResponse}</ReactMarkdown></div>}
             {!voiceTranscript && !voiceResponse && <div className="text-muted text-sm">Tap mic and speak — auto-sends on pause</div>}
           </div>
           <MicButton
