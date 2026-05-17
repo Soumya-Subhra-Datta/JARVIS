@@ -2,6 +2,9 @@ services:
   - type: web
     name: jarvis-backend
     env: node
+    region: singapore
+    plan: free
+    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /health
@@ -13,17 +16,17 @@ services:
       - key: DB_HOST
         sync: false
       - key: DB_PORT
-        value: 3306
+        value: 4000
       - key: DB_USER
         sync: false
       - key: DB_PASSWORD
         sync: false
       - key: DB_NAME
         value: jarvis_ai
+      - key: DB_SSL
+        value: "true"
       - key: JWT_SECRET
         generateValue: true
-      - key: JWT_EXPIRES_IN
-        value: 7d
       - key: CEREBRAS_API_KEY
         sync: false
       - key: CEREBRAS_MODEL
