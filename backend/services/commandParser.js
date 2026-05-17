@@ -77,7 +77,8 @@ const commandParser = (message) => {
         /^launch\s+(.+)/i,
         /^navigate\s+to\s+(.+)/i,
         /^play\s+(.+)\s+(?:on|in)\s+(.+)/i,
-/^search\s+(.+)\s+(?:on|in)\s+(.+)/i
+        /^play\s+(.+)/i,
+        /^search\s+(.+)\s+(?:on|in)\s+(.+)/i
       ],
       extract: (msg) => {
         const siteMap = {
@@ -109,7 +110,7 @@ const commandParser = (message) => {
         };
 
         const siteSearchConfig = {
-          'youtube': { url: 'https://youtube.com/results', param: 'search_query' },
+          'youtube': { url: 'https://music.youtube.com/search', param: 'q' },
           'google': { url: 'https://google.com/search', param: 'q' },
           'bing': { url: 'https://bing.com/search', param: 'q' },
           'duckduckgo': { url: 'https://duckduckgo.com', param: 'q' },
@@ -126,7 +127,7 @@ const commandParser = (message) => {
           const platform = playMatch[2].trim().toLowerCase();
           for (const [key, config] of Object.entries(siteSearchConfig)) {
             if (platform.includes(key)) {
-              return { site: key, url: `${config.url}?${config.param}=${encodeURIComponent(query)}`, search: true, query };
+              return { site: key === 'youtube' ? 'youtube music' : key, url: `${config.url}?${config.param}=${encodeURIComponent(query)}`, search: true, query };
             }
           }
           for (const [key, baseUrl] of Object.entries(siteMap)) {
@@ -134,7 +135,13 @@ const commandParser = (message) => {
               return { site: key, url: `${baseUrl}/search?q=${encodeURIComponent(query)}`, search: true, query };
             }
           }
-          return { site: 'youtube', url: `https://youtube.com/results?search_query=${encodeURIComponent(query)}`, search: true, query };
+          return { site: 'youtube music', url: `https://music.youtube.com/search?q=${encodeURIComponent(query)}`, search: true, query };
+        }
+
+        const justPlayMatch = msg.match(/^play\s+(.+)/i);
+        if (justPlayMatch) {
+          const query = justPlayMatch[1].trim();
+          return { site: 'youtube music', url: `https://music.youtube.com/search?q=${encodeURIComponent(query)}`, search: true, query };
         }
 
         const searchMatch = msg.match(/^search\s+(.+)\s+(?:on|in|for)\s+(.+)/i);
